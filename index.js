@@ -27,6 +27,7 @@ async function run() {
     await client.connect();
     const userCollection = client.db("hotelDB").collection("users");
     const roomCollection = client.db("hotelDB").collection("rooms");
+    const bookCollection = client.db("hotelDB").collection("bookings");
 
     //rooms api
     app.get("/rooms/:roomName", async (req, res) => {
@@ -43,6 +44,11 @@ async function run() {
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+    app.post("/rooms/:roomName", async (req, res) => {
+      const bookRoom = req.body;
+      const result = await bookCollection.insertOne(bookRoom);
       res.send(result);
     });
 
