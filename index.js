@@ -40,6 +40,11 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    app.get("/bookings", async (req, res) => {
+      const cursor = bookCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     app.post("/users", async (req, res) => {
       const newUser = req.body;
