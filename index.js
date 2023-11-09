@@ -28,6 +28,7 @@ async function run() {
     const userCollection = client.db("hotelDB").collection("users");
     const roomCollection = client.db("hotelDB").collection("rooms");
     const bookCollection = client.db("hotelDB").collection("bookings");
+    const reviewCollection = client.db("hotelDB").collection("review");
 
     //rooms api
     app.get("/rooms/:roomName", async (req, res) => {
@@ -46,9 +47,25 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/review", async (req, res) => {
+      const cursor = reviewCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
       res.send(result);
     });
     app.post("/rooms/:roomName", async (req, res) => {
@@ -69,6 +86,20 @@ async function run() {
         },
       };
       const result = await roomCollection.updateOne(query, room, options);
+      res.send(result);
+    });
+    app.put("/bookings/:id", async (req, res) => {
+      const bookingId = req.params.id;
+  const { newDate } = req.body;
+  const query = { _id: new ObjectId(bookingId) };
+      const options = { upsert: true };
+      const updatedDate = newDate;
+      const upDate = {
+        $set: {
+          date: new Date(newDate),
+        },
+      };
+      const result = await bookCollection.updateOne(query, upDate, options);
       res.send(result);
     });
 
