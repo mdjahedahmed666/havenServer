@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-var jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
@@ -8,8 +7,21 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 //Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+      'http://localhost:5173',
+      'https://assignment-11-3eb50.web.app',
+      'https://assignment-11-3eb50.firebaseapp.com/'
+  ],
+  credentials: true
+}));
 app.use(express.json());
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*"); // Change "*" to your allowed origins.
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0jahed.ldqz6dp.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -25,18 +37,11 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const userCollection = client.db("hotelDB").collection("users");
     const roomCollection = client.db("hotelDB").collection("rooms");
     const bookCollection = client.db("hotelDB").collection("bookings");
     const reviewCollection = client.db("hotelDB").collection("review");
-
-    //auth api
-    app.post("/jwt", async (req, res) => {
-      const user = req.body;
-      console.log(user);
-      res.send(result);
-    });
 
     //rooms api
     app.get("/rooms/:roomName", async (req, res) => {
@@ -119,7 +124,7 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
