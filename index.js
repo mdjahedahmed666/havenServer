@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+var jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
@@ -29,6 +30,13 @@ async function run() {
     const roomCollection = client.db("hotelDB").collection("rooms");
     const bookCollection = client.db("hotelDB").collection("bookings");
     const reviewCollection = client.db("hotelDB").collection("review");
+
+    //auth api
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      res.send(result);
+    });
 
     //rooms api
     app.get("/rooms/:roomName", async (req, res) => {
